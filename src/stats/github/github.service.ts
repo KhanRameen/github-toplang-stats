@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 
 @Injectable()
 export class GithubService {
@@ -10,8 +11,19 @@ export class GithubService {
     private get headers(){
         return{
             Authorization: `Bearer ${this.config.get('GITHUB_TOKEN')}`,
-            Accept: 'application/vnd.github+json'
-            
+            Accept: 'application/vnd.github+json'            
         }
     }
+
+    async getUserRepos(username:string){
+        const {data} = await axios.get(`${this.baseUrl}/users/${username}/repos`, {headers:this.headers})
+
+        return data.filter((repo:any)=> !repo.fork)
+    }
+
+    async getRepoLanguages(owner:string, repo:string){
+        const {data} = await axios.get(`${this.baseUrl}/repos/${owner}/${repo}/languages`, {headers:this.headers})
+        return data
+    }
+
 }
