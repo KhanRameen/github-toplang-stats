@@ -30,6 +30,16 @@ export class StatsService {
             percentages[lang]= Math.round((byte as number/totalBytes)*100)
         }
         
-        return percentages
+        return this.cleanState(percentages)
+    }
+
+     private cleanState(stats: Record<string, number>){
+        return Object.entries(stats).filter(([_, value])=>value>=0.5)
+        .sort((a,b)=>b[1]-a[1]).slice(0,5).reduce((acc, [key, value])=>{
+            acc[key] = value
+            return acc
+        },{} as Record<string, number>)
     }
 }
+
+
