@@ -19,15 +19,19 @@ export class StatsService {
             return cached.data;
         }
 
-        const repos = await this.github.getUserRepos(username)
+        const repos = (await this.github.getUserRepos(username)).slice(0,80)
         if(!repos){
             throw new NotFoundException(`repos under the username ${username} not found!`)
         }
+        
+        const languageRequests = repos.map((repo:any)=>{
+            this.github.getRepoLanguages(username, repo.name)
+        })        
+        const languagesArray = await Promise.all(languageRequests);
+        
         const totals: Record<string,number> = {}
-
-        for (const repo of repos){
-            const langs = await this.github.getRepoLanguages(username, repo.name)
-            
+        
+        for (const langs of languagesArray){    
             for (const [lang,bytes] of Object.entries(langs)){
                 totals[lang]=(totals[lang] || 0) + (bytes as number)
             }
