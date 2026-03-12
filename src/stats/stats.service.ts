@@ -5,7 +5,20 @@ import { GithubService } from './github/github.service';
 export class StatsService {
     constructor(private github: GithubService){}
 
+    private cache = new Map<
+        string,
+        {data:
+            Record<string,number>;
+            expires:number}
+        >
+
     async getLanguageStats(username:string){
+        const cached = this.cache.get(username);
+
+        if (cached && cached.expires > Date.now()) {
+            return cached.data;
+        }
+
         const repos = await this.github.getUserRepos(username)
         if(!repos){
             throw new NotFoundException(`repos under the username ${username} not found!`)
@@ -30,7 +43,14 @@ export class StatsService {
             percentages[lang]= Math.round((byte as number/totalBytes)*100)
         }
         
-        return this.cleanState(percentages)
+        const cleaned = this.cleanState(percentages)
+
+        this.cache.set(username, {
+            data: cleaned,
+            expires: Date.now() + 12 * 60 * 60 * 1000
+        })
+
+        return cleaned
     }
 
      private cleanState(stats: Record<string, number>){
