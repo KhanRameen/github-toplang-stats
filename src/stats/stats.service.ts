@@ -5,16 +5,33 @@ import { GithubService } from './github/github.service';
 export class StatsService {
     constructor(private github: GithubService){}
 
+    private cache = new Map<
+        string,
+        {data:
+            Record<string,number>;
+            expires:number}
+        >
+
     async getLanguageStats(username:string){
-        const repos = await this.github.getUserRepos(username)
+        const cached = this.cache.get(username);
+
+        if (cached && cached.expires > Date.now()) {
+            return cached.data;
+        }
+
+        const repos = (await this.github.getUserRepos(username)).slice(0,80)
         if(!repos){
             throw new NotFoundException(`repos under the username ${username} not found!`)
         }
+        
+        const languageRequests = repos.map((repo:any)=>{
+            this.github.getRepoLanguages(username, repo.name)
+        })        
+        const languagesArray = await Promise.all(languageRequests);
+        
         const totals: Record<string,number> = {}
-
-        for (const repo of repos){
-            const langs = await this.github.getRepoLanguages(username, repo.name)
-            
+        
+        for (const langs of languagesArray){    
             for (const [lang,bytes] of Object.entries(langs)){
                 totals[lang]=(totals[lang] || 0) + (bytes as number)
             }
@@ -30,7 +47,14 @@ export class StatsService {
             percentages[lang]= Math.round((byte as number/totalBytes)*100)
         }
         
-        return this.cleanState(percentages)
+        const cleaned = this.cleanState(percentages)
+
+        this.cache.set(username, {
+            data: cleaned,
+            expires: Date.now() + 12 * 60 * 60 * 1000
+        })
+
+        return cleaned
     }
 
      private cleanState(stats: Record<string, number>){

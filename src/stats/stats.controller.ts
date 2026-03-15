@@ -23,6 +23,7 @@ export class StatsController {
         const svg = this.svgService.generate(username, stats)
 
         res.setHeader('Content-Type', 'image/svg+xml');
+        res.setHeader('Cache-Control', 'public, max-age=43,200') //12hrs    
         res.send(svg)
 
     }
