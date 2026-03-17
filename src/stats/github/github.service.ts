@@ -17,7 +17,7 @@ export class GithubService {
     }
 
     async getUserRepos(username:string){
-        const {data} = await axios.get(`${this.baseUrl}/users/${username}/repos/per_page=80`, {headers:this.headers})
+        const {data} = await axios.get(`${this.baseUrl}/users/${username}/repos?per_page=80`, {headers:this.headers})
 
         return data.filter((repo:any)=> !repo.fork)
     }

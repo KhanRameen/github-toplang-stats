@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { GITHUB_LANGUAGE_COLORS, ThemeName, THEMES } from './theme';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class SvgService {
-  generate(username: string, stats: Record<string, number>) {
+
+  generate(username: string, stats: Record<string, number>, theme?:ThemeName) {
     const entries = Object.entries(stats);
     const total = entries.reduce((sum, [, v]) => sum + v, 0);
     const width = 580;
@@ -15,12 +18,12 @@ export class SvgService {
     </filter>
   </defs>
 
-  ${this.renderDots(entries, total)}
-  ${this.renderLegend(entries, total)}
+  ${this.renderDots(entries, total, theme)}
+  ${this.renderLegend(entries, total, theme)}
 </svg>`;
   }
 
-  private renderDots(entries: [string, number][], total: number): string {
+  private renderDots(entries: [string, number][], total: number, theme?:ThemeName): string {
     const dots: string[] = [];
     const dotRadius = 6;
     const dotSpacing = 19;
@@ -59,7 +62,7 @@ export class SvgService {
 
         const x = startX + col * dotSpacing;
         const y = startY + row * dotSpacing;
-        const color = this.getSliceColor(currentLangIndex);
+        const color = this.getSliceColor(currentLangIndex, entries[currentLangIndex][0], theme);
 
         dots.push(`
   <circle cx="${x}" cy="${y}" r="${dotRadius}" fill="${color}" filter="url(#dotShadow)"/>`);
@@ -72,14 +75,14 @@ export class SvgService {
     return dots.join('');
   }
 
-  private renderLegend(entries: [string, number][], total: number): string {
+  private renderLegend(entries: [string, number][], total: number, theme?:ThemeName): string {
     const lx = 420;
     const rowH = 20;
     const startY = 53;
 
     return entries.map(([lang, value], i) => {
       const y = startY + i * rowH;
-      const color = this.getSliceColor(i);
+      const color = this.getSliceColor(i, lang, theme);
       const percent = ((value / total) * 100).toFixed(1);
 
       return `
@@ -89,17 +92,18 @@ export class SvgService {
     }).join('');
   }
 
-  private getSliceColor(index: number): string {
-    const palette = [
-      '#f9d98a',
-      '#f4a26b',
-      '#f26d85',
-      '#b85c8a',
-      '#d4829e',
-      '#e8a0b4',
-      '#a3c4bc',
-      '#7eb8c9',
-    ];
-    return palette[index % palette.length];
+  private getSliceColor(
+    index: number,
+    lang: string,
+    theme?: ThemeName,
+  ): string {
+    
+    if(!theme){
+      return GITHUB_LANGUAGE_COLORS[lang] || '#3178c6'
+    }
+
+    const palette = THEMES[theme!] 
+    return palette[index % palette.length]
+
   }
 }
