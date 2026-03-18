@@ -1,12 +1,12 @@
-export type ThemeName =  "sunset" | "sunrise" | "dawn" | "tropic" | "powder" | "popsicle" | "dune" | "dusk" | "waves" | "mulberry" | "crimson" | "lavendar" | "forest" | "cold" | "burnt" | "candy" | "herd"; 
+export type ThemeName =  "sunset" | "sunrise" | "dawn" | "tropic" | "powder" | "popsicle" | "dune" | "dusk" | "waves" | "mulberry" | "crimson" | "lavendar" | "forest" | "cold" | "burnt" | "candy" | "herd" | "totoro"; 
 
 export const THEMES: Record<ThemeName, string[]> = {
     sunset: [
         "#e2d850",
-        "#F2AC57",
-        "#F28D52",
-        "#D9805F",
-        "#A67676"
+        "#ffa537",
+        "#e8507b",
+        "#883030",
+        "#180a0a"
     ],
 
     sunrise:[
@@ -18,27 +18,27 @@ export const THEMES: Record<ThemeName, string[]> = {
     ],
 
     dawn:[
+        "#a9b8d6",
         "#c9627e",
-        "#A6567B",
         "#546C8C",
-        "#425B8C",
-       " #1B3C59"
+        "#A6567B",
+       " #e0c57c"
     ],
 
     tropic:[
         "#267365",
         "#F2CB05",
-        "#F29F05",
-        "#F66B2C",
-        "#F23030"
+        "#db6028",
+        "#f20574",
+        "#F23030",
     ],
 
     powder:[
-        "#A9C2D9",
-        "#C1D0D9",
+        "#000000",
+        "#bd0b0b",
+        "#4a4343",
         "#D9D9D9",
-        "#F2F2F2",
-        "#D9D9D9"
+        "#b03232",
     ],
 
     popsicle:[
@@ -51,42 +51,42 @@ export const THEMES: Record<ThemeName, string[]> = {
 
     dune:[
         "#A66B37",
-        "#59130C",
-        "#d4d3c6",
-        "#8C251C",
+        "   #8C251C",
+        "#c7c0a6",
+        "#4f0f09",
         "#BF372A"
     ],
 
     dusk:[
-        "#A64456",
         "#3A3659",
-        "#F2BC8D",
-        "#F2594B",
-        "#BF5349"
+        "#A64456",
+        "#f7c497",
+        "#d45246",
+        "#782d27"
     ],
 
     waves:[
-        "#023859",
-        "#3C7DA6",
-        "#3C7DA6",
-        "#012E40",
+        "#569cc7",
+        "#04254d",
+        "#b3cedf",
+        "#093f8c",
         "#011C26"
     ], 
 
     mulberry:[
-        "#2E112D",
+        "#220c21",
+        "#9b013c",
+        "#c5556b",
+        "#d82d44",
+        "#e13e53",
         "#540032",
-        "#820333",
-        "#C9283E",
-        "#C9283E",
-        "#F0433A"
     ],
 
     crimson:[
         "#c90439",
+        "#2D83A6",
         "#68001c",
         "#254159",
-        "#2D83A6",
         "#A9CBD9"
     ],
 
@@ -115,29 +115,37 @@ export const THEMES: Record<ThemeName, string[]> = {
     ],
 
     cold:[
+        "#0C5944",
         "#D0E9F2",
         "#1797A6", 
-        "#A0EAF2",
-        "#0A403A",
-        "#0C5944"
+        "#83dfe9",
+        "#062d28",
     ],
 
     burnt:[
-        "#D97904",
-        "#D9AB73",
-        "#8C4303",
         "#400808",
-        "#0D0D0D"
+        "#D97904",
+        "#813e03",
+        "#D9AB73",
+        "#3c3232"
     ],
 
 
     herd:[
         "#0F1F40",
         "#D98BA7",
+        "#8699d0",
         "#734E46",
-        "#5d141b",
         "#0D0D0D"
 
+    ],
+
+    totoro:[
+        "#5c5450",
+        "#eadeb6",
+        "#81b240",
+        "#9ec0e5",
+        "#0D0D0D"
     ]
 }
 
