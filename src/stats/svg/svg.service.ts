@@ -4,12 +4,11 @@ import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class SvgService {
-
-  generate(username: string, stats: Record<string, number>, theme?:ThemeName) {
+  generate(username: string, stats: Record<string, number>, theme?: ThemeName) {
     const entries = Object.entries(stats);
     const total = entries.reduce((sum, [, v]) => sum + v, 0);
     const width = 580;
-    const height = 180;
+    const height = 140;
 
     return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -23,14 +22,18 @@ export class SvgService {
 </svg>`;
   }
 
-  private renderDots(entries: [string, number][], total: number, theme?:ThemeName): string {
+  private renderDots(
+    entries: [string, number][],
+    total: number,
+    theme?: ThemeName,
+  ): string {
     const dots: string[] = [];
     const dotRadius = 6;
     const dotSpacing = 19;
     const cols = 20;
     const rows = 5;
     const startX = 25;
-    const startY = 52;
+    const startY = 30;
 
     // Calculate how many dots each language gets (out of 100)
     const dotCounts = entries.map(([, value]) => {
@@ -55,14 +58,21 @@ export class SvgService {
         if (dotIndex >= 100) break;
 
         // Move to next language if current is exhausted
-        while (dotsRemainingForLang === 0 && currentLangIndex < entries.length - 1) {
+        while (
+          dotsRemainingForLang === 0 &&
+          currentLangIndex < entries.length - 1
+        ) {
           currentLangIndex++;
           dotsRemainingForLang = dotCounts[currentLangIndex];
         }
 
         const x = startX + col * dotSpacing;
         const y = startY + row * dotSpacing;
-        const color = this.getSliceColor(currentLangIndex, entries[currentLangIndex][0], theme);
+        const color = this.getSliceColor(
+          currentLangIndex,
+          entries[currentLangIndex][0],
+          theme,
+        );
 
         dots.push(`
   <circle cx="${x}" cy="${y}" r="${dotRadius}" fill="${color}" filter="url(#dotShadow)"/>`);
@@ -75,21 +85,27 @@ export class SvgService {
     return dots.join('');
   }
 
-  private renderLegend(entries: [string, number][], total: number, theme?:ThemeName): string {
+  private renderLegend(
+    entries: [string, number][],
+    total: number,
+    theme?: ThemeName,
+  ): string {
     const lx = 420;
     const rowH = 20;
-    const startY = 53;
+    const startY = 31;
 
-    return entries.map(([lang, value], i) => {
-      const y = startY + i * rowH;
-      const color = this.getSliceColor(i, lang, theme);
-      const percent = ((value / total) * 100).toFixed(1);
+    return entries
+      .map(([lang, value], i) => {
+        const y = startY + i * rowH;
+        const color = this.getSliceColor(i, lang, theme);
+        const percent = ((value / total) * 100).toFixed(1);
 
-      return `
+        return `
   <rect x="${lx}" y="${y - 9}" width="10" height="10" rx="3" fill="${color}"/>
   <text x="${lx + 18}" y="${y}" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#7a5c6e">${lang}</text>
   <text x="${lx + 150}" y="${y}" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="400" fill="#9a8a96" text-anchor="end">${percent}%</text>`;
-    }).join('');
+      })
+      .join('');
   }
 
   private getSliceColor(
@@ -97,13 +113,11 @@ export class SvgService {
     lang: string,
     theme?: ThemeName,
   ): string {
-    
-    if(!theme){
-      return GITHUB_LANGUAGE_COLORS[lang] || '#3178c6'
+    if (!theme) {
+      return GITHUB_LANGUAGE_COLORS[lang] || '#3178c6';
     }
 
-    const palette = THEMES[theme!] 
-    return palette[index % palette.length]
-
+    const palette = THEMES[theme!];
+    return palette[index % palette.length];
   }
 }
