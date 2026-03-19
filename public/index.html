@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Lang Card</title>
+</head>
+<body>
+
+<h2>GitHub Language Stats Generator</h2>
+
+<input id="username" placeholder="GitHub username" />
+
+<select id="theme">
+  <option value="default">Default</option>
+  <option value="github">GitHub</option>
+  <option value="pastel">Pastel</option>
+  <option value="sunset">Sunset</option>
+</select>
+
+<input id="hide" placeholder="Hide languages (HTML,CSS)" />
+
+<br/><br/>
+
+<img id="preview" width="500"/>
+
+<br/><br/>
+
+<button onclick="copy()">Copy Markdown</button>
+
+<script>
+const baseUrl = "/api/stats";
+
+function update() {
+  const username = document.getElementById("username").value;
+  const theme = document.getElementById("theme").value;
+  const hide = document.getElementById("hide").value;
+
+  if (!username) return;
+
+  let url = `${baseUrl}?username=${username}&theme=${theme}`;
+
+  if (hide) {
+    url += `&hide=${encodeURIComponent(hide)}`;
+  }
+
+  document.getElementById("preview").src = url;
+  window.currentUrl = url;
+}
+
+function copy() {
+  if (!window.currentUrl) return;
+
+  const markdown = `![GitHub Stats](${window.location.origin}${window.currentUrl})`;
+
+  navigator.clipboard.writeText(markdown);
+  alert("Copied!");
+}
+
+document.getElementById("username").addEventListener("input", update);
+document.getElementById("theme").addEventListener("change", update);
+document.getElementById("hide").addEventListener("input", update);
+</script>
+
+</body>
+</html>
