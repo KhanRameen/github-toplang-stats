@@ -1,64 +1,712 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>GitHub Lang Card</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>toplang · GitHub Language Stats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── Variables ── */
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --surface2: #efefeb;
+      --border: #d8d6cf;
+      --text: #1a1917;
+      --text-muted: #7a7871;
+      --accent: #1a1917;
+      --accent-inv: #f5f4f0;
+      --green: #2da44e;
+      --green-soft: #d4edda;
+      --red: #cf222e;
+      --toggle-knob: #1a1917;
+      --toggle-track: #d8d6cf;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #e6edf3;
+      --accent-inv: #0d1117;
+      --green: #3fb950;
+      --green-soft: #1b3a25;
+      --red: #f85149;
+      --toggle-knob: #e6edf3;
+      --toggle-track: #30363d;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.25);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background var(--transition), color var(--transition);
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ── Toggle ── */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .toggle input { display: none; }
+
+    .toggle-track {
+      width: 100%;
+      height: 100%;
+      background: var(--toggle-track);
+      border-radius: 999px;
+      transition: background var(--transition);
+      border: 1px solid var(--border);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--toggle-knob);
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .toggle input:checked ~ .toggle-track { background: var(--accent); }
+    .toggle input:checked ~ .toggle-knob { transform: translateX(20px); background: var(--accent-inv); }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 52px 24px 0;
+    }
+
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 10px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 44px;
+      line-height: 1.6;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 28px 24px;
+      box-shadow: var(--shadow);
+      transition: background var(--transition), border-color var(--transition);
+      margin-bottom: 20px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── Input group ── */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .input-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px 10px 36px;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--text);
+      box-shadow: 0 0 0 3px rgba(26,25,23,0.08);
+    }
+
+    [data-theme="dark"] input[type="text"]:focus {
+      box-shadow: 0 0 0 3px rgba(230,237,243,0.08);
+    }
+
+    input[type="text"]::placeholder { color: var(--text-muted); }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-top: 9px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: all var(--transition);
+    }
+    .status-badge.checking { color: var(--text-muted); background: var(--surface2); border: 1px solid var(--border); }
+    .status-badge.valid    { color: var(--green); background: var(--green-soft); border: 1px solid var(--green); }
+    .status-badge.invalid  { color: var(--red); background: #ffeef0; border: 1px solid var(--red); }
+    [data-theme="dark"] .status-badge.invalid { background: #3d0f0f; }
+    .status-badge.hidden   { visibility: hidden; }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-inv);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover { background: var(--border); }
+
+    /* ── Preview area ── */
+    .preview-area {
+      min-height: 160px;
+      background: var(--surface2);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .preview-area img {
+      max-width: 100%;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .preview-placeholder {
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .preview-placeholder .placeholder-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      opacity: 0.4;
+    }
+
+    .preview-placeholder p { font-size: 12px; }
+
+    .preview-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    /* ── Customization ── */
+    .custom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b949e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color var(--transition), background-color var(--transition);
+    }
+
+    select:focus { border-color: var(--text); }
+
+    /* ── Theme color swatches ── */
+    .theme-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .theme-swatch {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+    }
+
+    .theme-swatch:hover { transform: scale(1.1); }
+    .theme-swatch.active { border-color: var(--text); }
+
+    .theme-swatch::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: white;
+      opacity: 0;
+      transition: opacity var(--transition);
+      font-family: system-ui;
+    }
+
+    .theme-swatch.active::after { opacity: 1; }
+
+    /* ── Syntax block ── */
+    .code-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      overflow-x: auto;
+      white-space: nowrap;
+      position: relative;
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .code-block code { color: var(--text); }
+
+    .copy-inline {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      padding: 4px 9px;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--accent);
+      color: var(--accent-inv);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Loading shimmer ── */
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    .preview-area.loading {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card { animation: fadeUp 0.4s ease both; }
+    .card:nth-child(2) { animation-delay: 0.06s; }
+    .card:nth-child(3) { animation-delay: 0.12s; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 20px 20px; }
+      main { padding: 36px 16px 0; }
+      .custom-grid { grid-template-columns: 1fr; }
+      .input-row { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
 
-<h2>GitHub Language Stats Generator</h2>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <span class="logo-dot"></span>
+      toplang
+    </div>
+    <div class="toggle-wrap">
+      <span class="toggle-label" id="theme-lbl">light</span>
+      <label class="toggle" title="Toggle dark mode">
+        <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+        <div class="toggle-track"></div>
+        <div class="toggle-knob"></div>
+      </label>
+    </div>
+  </header>
 
-<input id="username" placeholder="GitHub username" />
+  <!-- Main -->
+  <main>
+    <h1 class="page-title">GitHub top language stats</h1>
+    <p class="page-subtitle">Generate a language usage card for your README — paste a username and get a badge in seconds.</p>
 
-<select id="theme">
-  <option value="default">Default</option>
-  <option value="github">GitHub</option>
-  <option value="pastel">Pastel</option>
-  <option value="sunset">Sunset</option>
-</select>
+    <!-- Step 1: Username -->
+    <div class="card">
+      <div class="section-label">01 · GitHub Account</div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <span class="input-icon">@</span>
+          <input type="text" id="username" placeholder="username" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <div class="status-badge hidden" id="status-badge">
+        <span class="status-dot"></span>
+        <span id="status-text"></span>
+      </div>
+    </div>
 
-<input id="hide" placeholder="Hide languages (HTML,CSS)" />
+    <!-- Step 2: Preview -->
+    <div class="card">
+      <div class="section-label">02 · Preview</div>
+      <div class="preview-area" id="preview-area">
+        <div class="preview-placeholder" id="placeholder">
+          <div class="placeholder-icon">◈</div>
+          <p>enter a username to preview your card</p>
+        </div>
+        <img id="preview" style="display:none;" alt="Language stats card" />
+      </div>
+      <div class="preview-actions">
+        <button class="btn btn-primary" onclick="copyMarkdown()">copy markdown</button>
+        <button class="btn btn-ghost" onclick="copyUrl()">copy url</button>
+        <button class="btn btn-ghost" onclick="showReadme()">readme syntax</button>
+      </div>
+      <!-- Readme syntax block (hidden by default) -->
+      <div id="readme-block" style="margin-top:14px; display:none;">
+        <div class="code-block">
+          <code id="readme-code"></code>
+          <button class="btn btn-ghost copy-inline" onclick="copyReadme()">copy</button>
+        </div>
+      </div>
+    </div>
 
-<br/><br/>
+    <!-- Step 3: Customise -->
+    <div class="card">
+      <div class="section-label">03 · Customisation</div>
+      <div class="custom-grid">
+        <div>
+          <span class="field-label">Theme</span>
+          <div class="theme-options" id="theme-options">
+            <div class="theme-swatch active" data-theme-val="" style="background: linear-gradient(135deg,#0d1117,#161b22);" title="GitHub Default"></div>
+            <div class="theme-swatch" data-theme-val="sunrise" style="background: linear-gradient(135deg,#ff6b6b,#ffd93d);" title="Sunrise"></div>
+            <div class="theme-swatch" data-theme-val="dawn" style="background: linear-gradient(135deg,#a8edea,#fed6e3);" title="Dawn"></div>
+            <div class="theme-swatch" data-theme-val="sunset" style="background: linear-gradient(135deg,#f093fb,#f5576c);" title="Sunset"></div>
+            <div class="theme-swatch" data-theme-val="ocean" style="background: linear-gradient(135deg,#2193b0,#6dd5ed);" title="Ocean"></div>
+            <div class="theme-swatch" data-theme-val="forest" style="background: linear-gradient(135deg,#134e5e,#71b280);" title="Forest"></div>
+          </div>
+        </div>
+        <div>
+          <span class="field-label">Hide languages</span>
+          <div class="input-wrap" style="margin-top:0;">
+            <span class="input-icon" style="font-size:11px;">—</span>
+            <input type="text" id="hide" placeholder="HTML, CSS, Markdown" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
-<img id="preview" width="500"/>
-
-<br/><br/>
-
-<button onclick="copy()">Copy Markdown</button>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
 <script>
-const baseUrl = "/api/stats";
+  const baseUrl = '/api/stats';
+  let currentUrl = '';
+  let debounceTimer = null;
+  let checkTimer = null;
+  let selectedTheme = '';
 
-function update() {
-  const username = document.getElementById("username").value;
-  const theme = document.getElementById("theme").value;
-  const hide = document.getElementById("hide").value;
-
-  if (!username) return;
-
-  let url = `${baseUrl}?username=${username}&theme=${theme}`;
-
-  if (hide) {
-    url += `&hide=${encodeURIComponent(hide)}`;
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const isDark = document.getElementById('theme-toggle').checked;
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    document.getElementById('theme-lbl').textContent = isDark ? 'dark' : 'light';
   }
 
-  document.getElementById("preview").src = url;
-  window.currentUrl = url;
-}
+  /* ── Swatch selection ── */
+  document.getElementById('theme-options').addEventListener('click', e => {
+    const sw = e.target.closest('.theme-swatch');
+    if (!sw) return;
+    document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+    sw.classList.add('active');
+    selectedTheme = sw.dataset.themeVal;
+    update();
+  });
 
-function copy() {
-  if (!window.currentUrl) return;
+  /* ── Account check ── */
+  function setStatus(state, text) {
+    const badge = document.getElementById('status-badge');
+    const txt = document.getElementById('status-text');
+    badge.className = 'status-badge ' + state;
+    txt.textContent = text;
+  }
 
-  const markdown = `![GitHub Stats](${window.location.origin}${window.currentUrl})`;
+  async function checkUser(username) {
+    setStatus('checking', 'checking account…');
+    try {
+      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setStatus('valid', `${data.public_repos} public repos`);
+        return true;
+      } else {
+        setStatus('invalid', 'account not found');
+        return false;
+      }
+    } catch {
+      setStatus('checking', 'could not verify');
+      return true; // allow preview anyway
+    }
+  }
 
-  navigator.clipboard.writeText(markdown);
-  alert("Copied!");
-}
+  /* ── Update preview ── */
+  async function update() {
+    const username = document.getElementById('username').value.trim();
+    const hide = document.getElementById('hide').value.trim();
 
-document.getElementById("username").addEventListener("input", update);
-document.getElementById("theme").addEventListener("change", update);
-document.getElementById("hide").addEventListener("input", update);
+    if (!username) {
+      setStatus('hidden', '');
+      resetPreview();
+      return;
+    }
+
+    clearTimeout(checkTimer);
+    checkTimer = setTimeout(() => checkUser(username), 600);
+
+    let url = `${baseUrl}?username=${encodeURIComponent(username)}`;
+    if (selectedTheme) url += `&theme=${encodeURIComponent(selectedTheme)}`;
+    if (hide) url += `&hide=${encodeURIComponent(hide)}`;
+
+    currentUrl = url;
+    updateReadmeCode(url);
+
+    const area = document.getElementById('preview-area');
+    const img = document.getElementById('preview');
+    const ph = document.getElementById('placeholder');
+
+    area.classList.add('loading');
+    img.style.display = 'none';
+    ph.style.display = 'none';
+
+    img.onload = () => {
+      area.classList.remove('loading');
+      img.style.display = 'block';
+    };
+    img.onerror = () => {
+      area.classList.remove('loading');
+      ph.style.display = '';
+    };
+    img.src = url;
+  }
+
+  function resetPreview() {
+    currentUrl = '';
+    const img = document.getElementById('preview');
+    img.style.display = 'none';
+    img.src = '';
+    document.getElementById('placeholder').style.display = '';
+    document.getElementById('preview-area').classList.remove('loading');
+    document.getElementById('readme-block').style.display = 'none';
+  }
+
+  function updateReadmeCode(url) {
+    const full = `${window.location.origin}${url}`;
+    document.getElementById('readme-code').textContent = `![GitHub Top Languages](${full})`;
+  }
+
+  /* ── Copy helpers ── */
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function copyMarkdown() {
+    if (!currentUrl) return toast('enter a username first');
+    const md = `![GitHub Top Languages](${window.location.origin}${currentUrl})`;
+    navigator.clipboard.writeText(md).then(() => toast('markdown copied ✓'));
+  }
+
+  function copyUrl() {
+    if (!currentUrl) return toast('enter a username first');
+    navigator.clipboard.writeText(`${window.location.origin}${currentUrl}`)
+      .then(() => toast('url copied ✓'));
+  }
+
+  function showReadme() {
+    if (!currentUrl) return toast('enter a username first');
+    const block = document.getElementById('readme-block');
+    block.style.display = block.style.display === 'none' ? '' : 'none';
+  }
+
+  function copyReadme() {
+    const code = document.getElementById('readme-code').textContent;
+    navigator.clipboard.writeText(code).then(() => toast('copied ✓'));
+  }
+
+  /* ── Event listeners ── */
+  document.getElementById('username').addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(update, 420);
+  });
+
+  document.getElementById('hide').addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(update, 420);
+  });
 </script>
-
 </body>
 </html>

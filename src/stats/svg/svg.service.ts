@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GITHUB_LANGUAGE_COLORS, ThemeName, THEMES } from './theme';
-import { plainToClass } from 'class-transformer';
+
 
 @Injectable()
 export class SvgService {
