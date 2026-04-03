@@ -14,7 +14,7 @@ import { join } from 'path';
     StatsModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
-      exclude: ['/api*'],
+      exclude: ['/api/{*path}'],
     }),
   ],
   controllers: [AppController],

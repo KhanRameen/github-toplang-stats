@@ -13,7 +13,8 @@ export class StatsService {
         >
 
     async getLanguageStats(username:string, hiddenLangs:string[]=[]){
-        const cached = this.cache.get(username);
+        const cacheKey = `${username}:${[...hiddenLangs].sort().join(',')}`
+        const cached = this.cache.get(cacheKey)
 
         if (cached && cached.expires > Date.now()) {
             return cached.data;

@@ -10,7 +10,7 @@ export class StatsController {
 
     @Get()
     async getStats(
-        @Res({passthrough: true}) res: Response,
+        @Res() res: Response,
         @Query('username') username:string, 
         @Query('theme') theme?: string,
         @Query('hide') hide?: string,
@@ -33,5 +33,8 @@ export class StatsController {
         res.setHeader('Content-Type', 'image/svg+xml');
         res.setHeader('Cache-Control', 'public, max-age=43,200') //12hrs    
         res.send(svg?? "")
+        
     }
+
+    
 }
