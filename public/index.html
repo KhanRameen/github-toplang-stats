@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>toplang · GitHub Language Stats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <span class="logo-dot"></span>
+      toplang
+    </div>
+    <div class="toggle-wrap">
+      <span class="toggle-label" id="theme-lbl">light</span>
+      <label class="toggle" title="Toggle dark mode">
+        <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+        <div class="toggle-track"></div>
+        <div class="toggle-knob"></div>
+      </label>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <h1 class="page-title">GitHub top language stats</h1>
+    <p class="page-subtitle">Generate a language usage card for your README. Paste a username and get a badge in seconds.</p>
+
+    <!-- Step 1: Username -->
+    <div class="card">
+      <div class="section-label">01 · GitHub Account</div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <span class="input-icon">@</span>
+          <input type="text" id="username" placeholder="username" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+      <div class="status-badge hidden" id="status-badge">
+        <span class="status-dot"></span>
+        <span id="status-text"></span>
+      </div>
+    </div>
+
+    <!-- Step 2: Preview -->
+    <div class="card">
+      <div class="section-label">02 · Preview</div>
+      <div class="preview-area" id="preview-area">
+        <div class="preview-placeholder" id="placeholder">
+          <div class="placeholder-icon">◈</div>
+          <p>enter a username to preview your card</p>
+        </div>
+        <img id="preview" style="display:none;" alt="Language stats card" />
+      </div>
+      <div class="preview-actions">
+        <button class="btn btn-primary" onclick="copyMarkdown()">copy markdown</button>
+        <button class="btn btn-ghost" onclick="copyUrl()">copy url</button>
+        <button class="btn btn-ghost" onclick="showReadme()">show syntax</button>
+      </div>
+      <!-- Readme syntax block (hidden by default) -->
+      <div id="readme-block" style="margin-top:14px; display:none;">
+        <div class="code-block">
+          <code id="readme-code"></code>
+          <button class="btn btn-ghost copy-inline" onclick="copyReadme()">copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Customise -->
+    <div class="card">
+      <div class="section-label">03 · Customisation</div>
+      <div class="custom-grid">
+        <div>
+  <span class="field-label">Theme</span>
+  <div class="theme-select-container" id="theme-select-container"></div>
+</div>
+        <div>
+          <span class="field-label">Hide languages</span>
+          <div class="input-wrap" style="margin-top:0;">
+            <span class="input-icon" style="font-size:11px;">—</span>
+            <input type="text" id="hide" placeholder="HTML, CSS, Markdown" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

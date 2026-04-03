@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GITHUB_LANGUAGE_COLORS, ThemeName, THEMES } from './theme';
-import { plainToClass } from 'class-transformer';
+
 
 @Injectable()
 export class SvgService {
@@ -102,7 +102,7 @@ export class SvgService {
 
         return `
   <rect x="${lx}" y="${y - 9}" width="10" height="10" rx="3" fill="${color}"/>
-  <text x="${lx + 18}" y="${y}" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#7a5c6e">${lang}</text>
+  <text x="${lx + 18}" y="${y}" font-family="'Segoe UI', Arial, sans-serif" font-size="12" font-weight="600" fill="#9a8a96">${lang}</text>
   <text x="${lx + 150}" y="${y}" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="400" fill="#9a8a96" text-anchor="end">${percent}%</text>`;
       })
       .join('');
