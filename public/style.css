@@ -1,3 +1,51 @@
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  header { padding: 20px 24px; }
+
+  main { padding: 36px 16px 0; }
+
+  .page-title { font-size: clamp(22px, 7vw, 36px); letter-spacing: -1px; }
+
+  .custom-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+@media (max-width: 480px) {
+  header { padding: 16px; }
+
+  .logo { font-size: 18px; }
+
+  .page-title { font-size: clamp(16px, 8vw, 20px); }
+
+  .page-subtitle { font-size: 12px; margin-bottom: 28px; }
+
+  .card { padding: 20px 16px 16px; }
+
+  .input-row { flex-direction: column; }
+
+  .preview-actions {
+    flex-wrap: wrap;
+  }
+
+  .preview-actions .btn {
+    flex: 1 1 calc(50% - 5px);
+    text-align: center;
+    padding: 10px 8px;
+  }
+
+  .preview-actions .btn:first-child {
+    flex: 1 1 100%;
+  }
+
+  .code-block {
+    padding-right: 60px; /* prevent copy button overlap */
+  }
+
+  .theme-option-name { font-size: 12px; min-width: 64px; }
+
+  .dot { width: 14px; height: 11px; }
+}
+
+
 /* ── Variables ── */
 :root {
   --bg: #f5f4f0;
