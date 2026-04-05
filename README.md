@@ -1,8 +1,7 @@
 # GitHub Top Language Stats
-
 A simple GitHub stats card that shows your most used programming languages as a clean SVG, perfect for your profile README.
 
-Built with NestJS
+*Built with NestJS*
 
 
 ##  Web Generator
