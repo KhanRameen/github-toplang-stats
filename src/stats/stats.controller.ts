@@ -15,6 +15,9 @@ export class StatsController {
         @Query('theme') theme?: string,
         @Query('hide') hide?: string,
     ){
+       
+       try{ 
+        
         if(!username){
             throw new BadRequestException('Username is Required')
         }
@@ -33,8 +36,11 @@ export class StatsController {
         res.setHeader('Content-Type', 'image/svg+xml');
         res.setHeader('Cache-Control', 'public, max-age=43,200') //12hrs    
         res.send(svg?? "")
-        
     }
-
+    catch(err:any){
+        res.setHeader('Cache-Control', 'no-store');
+    return res.send(this.svgService.generateError(err?.message ?? 'failed to load stats'));
+    }
+    }
     
 }
