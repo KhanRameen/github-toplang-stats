@@ -183,7 +183,7 @@ function toast(msg) {
 
 function copyMarkdown() {
   if (!currentUrl) return toast('enter a username first');
-  const md = `<img src="${window.location.origin}${currentUrl})"/>`;
+  const md = `<img src="${window.location.origin}${currentUrl}" />`;
   navigator.clipboard.writeText(md).then(() => toast('markdown copied ✓'));
 }
 
